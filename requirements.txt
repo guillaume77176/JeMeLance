@@ -1,0 +1,7 @@
+#packages transversaux 
+numpy 
+pandas
+polars
+matplotlib
+seaborn
+tqdm
