@@ -5,7 +5,7 @@
 Pour Emannuel : 
 
 Pour récupérer le data frame de travail brute faisant suite à la récupération RNE tu peux soit depuis le "main" ou bien "main/notebooks"
-lancer le code suivant : 
+lancer le code suivant (attention à ne pas commit dans le main, cela compromettrait tout le projet, utilise une autre branche pour cela): 
 
 ```` python
 from data.load_idf_10_24 import load_base
