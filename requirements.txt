@@ -5,3 +5,8 @@ polars
 matplotlib
 seaborn
 tqdm
+
+#nlp pour conversion "description" vers code APE
+spacy
+langchain_community.retrievers
+langchain_community.document_loaders
