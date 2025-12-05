@@ -30,3 +30,14 @@ Token pour projet :
 ``` text
 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
 ````
+
+
+Pour récupérer la variable cible (radié = 1 si entreprise radié 0 si toujours active)
+
+``` python
+
+#Construction de la variable cible "radié"
+data["dateRadiation"] = pd.to_datetime(data["dateRadiation"],errors="coerce")
+data["radié"] = data["dateRadiation"].notna().astype(int)
+
+```
