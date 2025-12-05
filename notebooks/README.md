@@ -6,7 +6,7 @@ Les autres notebooks fournis sont plus détaillés, où des explications plus ri
 
 Notenooks détaillés : 
 
-Partie "Récupération des données" : - `getRNE.ipynb` et `get_RNE_More`
+Partie "Récupération des données" : - `get_RNE_FromScratch.ipynb` et `get_RNE_More`
 
 Pour récupérer le data frame de travail brute après cette partie : 
 
