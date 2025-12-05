@@ -23,3 +23,10 @@ url  = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_final/idf_10_2
 
 data = pd.read_parquet(url, engine = "pyarrow") #enlève engine = "pyarrow" si erreur sur pyarrow dans ton ide
 ````
+
+
+Token pour projet : 
+
+``` text
+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
+````
