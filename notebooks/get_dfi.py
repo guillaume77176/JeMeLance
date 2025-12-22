@@ -1,17 +1,12 @@
 #packages utilisés
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import scipy as sp
-import statsmodels.api as sm
 
-#Récupération du data frame de travail
-from data.load_idf_10_24 import load_base
-data = load_base()
 
 def load_dfi():
     
+    #Récupération du data frame de travail
+    from data.load_idf_10_24 import load_base
+    data = load_base()
 
     drop = []
 
