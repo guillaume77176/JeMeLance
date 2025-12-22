@@ -3,8 +3,6 @@ import pandas as pd
 
 
 def load_dfi():
-    
-    #Récupération du data frame de travail
     from data.load_idf_10_24 import load_base
     data = load_base()
 
@@ -17,13 +15,13 @@ def load_dfi():
 
     drop.extend([*autre_statutFormalites,*autre_adresse,*autre_dateeffetferm,*associe_naissance])
 
-    drop.extend(["age0","age1","age2","age3","age4","age5","cessation","eirl","formeExerciceActivitePrincipale"
-    ,'dateImmat','nom', 'prenoms','principalAPEPrincipal','dateDissolutionDisparition',
-    'indicateurCessationTemporaire', 'indicateurPoursuiteActivite',
-    'indicateurMaintienImmatriculationRegistre', 'indicateurDissolution',
-    'indicateurDisparitionPM', 'motifDisparition', 'dateMiseEnSommeil',
-    'typeDissolution','diffusionINSEE','diffusionCommerciale',
-    'annee_tronc','dateClotureLiquidation','dateEffet','dateDebutAct']) 
+    drop.extend(["age0","age1","age2","age3","age4","age5","cessation","eirl","formeExerciceActivitePrincipale",
+        'dateImmat','nom', 'prenoms','principalAPEPrincipal','dateDissolutionDisparition',
+        'indicateurCessationTemporaire', 'indicateurPoursuiteActivite',
+        'indicateurMaintienImmatriculationRegistre', 'indicateurDissolution',
+        'indicateurDisparitionPM', 'motifDisparition', 'dateMiseEnSommeil',
+        'typeDissolution','diffusionINSEE','diffusionCommerciale',
+        'annee_tronc','dateClotureLiquidation','dateEffet','dateDebutAct']) 
 
     data = data.drop(columns=drop)
 
@@ -47,7 +45,7 @@ def load_dfi():
     #Suppression des lignes pour lesquelles indicateurDecesEntrepreneur est True
     data = data.loc[data["indicateurDecesEntrepreneur"]!="True"]
 
-        #Suppression des lignes pour lesquelles principalDateTransPrincipal est disponible 
+    #Suppression des lignes pour lesquelles principalDateTransPrincipal est disponible 
     data = data.loc[data["principalDateTransPrincipal"].isin(("non-disp","pincipal_false_transfert"))]
 
     #Création de la variable T
