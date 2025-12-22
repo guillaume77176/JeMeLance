@@ -4,13 +4,12 @@
 
 Pour Emannuel : 
 
-Pour récupérer le data frame de travail brute faisant suite à la récupération RNE tu peux soit depuis le "main" ou bien "main/notebooks"
-lancer le code suivant (attention à ne pas commit dans le main, cela compromettrait tout le projet, utilise une autre branche pour cela): 
+Pour récup les data avec les radié_i (au total tu récupère une liste de 5 data frames)
 
 ```` python
-from data.load_idf_10_24 import load_base
+from get_dfi import load_dfi
 
-df = load_base()
+data = load_dfi()
 
 ````
 
