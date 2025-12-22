@@ -25,6 +25,16 @@ def load_dfi():
 
     data = data.drop(columns=drop)
 
+    good_role = ['28','29','30','41','53','73','74','75','101','66','205','206','201']
+
+    data_mor = (data.loc[data["associe_1_role"].isin(good_role) | data["associe_2_role"].isin(good_role) 
+    data["associe_3_role"].isin(good_role) | data["associe_4_role"].isin(good_role)
+    data["associe_5_role"].isin(good_role)])
+
+    data_p = data.loc[data["personneMorale"] == 0]
+
+    data = pd.concat([data_mor,data_p])
+
     data["micro"] = data["micro"].apply(lambda x : False if (x == "None") or (x == "False") else True)
     data["micro"] = data["micro"].astype(int)
 
