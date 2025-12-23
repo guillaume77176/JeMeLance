@@ -15,3 +15,18 @@ def load_base_model():
     return data
 
 
+def get_df_i(data : pd.DataFrame) -> list:
+    
+    df1 = data.copy()
+    df2 = data.loc[(data["radié1"] == 0)].copy()
+    df3 = data.loc[(data["radié1"] == 0) & (data["radié2"] == 0)].copy()
+    df4 = data.loc[(data["radié1"] == 0) & (data["radié2"] == 0) & (data["radié3"] == 0)].copy()
+    df5 = data.loc[(data["radié1"] == 0) & (data["radié2"] == 0) & (data["radié3"] == 0) & (data["radié4"] == 0)].copy()
+
+    df1 = df1
+    df2 = df2.loc[df2["date_creation"].dt.year < 2023]
+    df3 = df3.loc[df3["date_creation"].dt.year < 2022]
+    df4 = df4.loc[df4["date_creation"].dt.year < 2021]
+    df5 = df5.loc[df5["date_creation"].dt.year < 2020]
+
+    return [df1,df2,df3,df4,df5]
