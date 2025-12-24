@@ -10,3 +10,5 @@ streamlit
 spacy
 langchain_community
 joblib
+
+sklearn.feature_extraction.text
