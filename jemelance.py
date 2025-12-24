@@ -64,7 +64,7 @@ if objet != st.session_state.last_objet and objet != "":
     # --- BARRE DE CHARGEMENT ---
     progress = st.progress(0)
     for i in range(100):
-        time.sleep(0.05)
+        time.sleep(0.15)
         progress.progress(i + 1)
 
     # --- PRÉDICTION ---
@@ -75,6 +75,7 @@ if objet != st.session_state.last_objet and objet != "":
     ape_pred = objet_predict[0]
     ex_text = objet_predict[2][0]
 
+    st.write("Description chargée. Vous pouvez continuer.")
     st.write(f"Code APE correspondant : {ape_pred}")
     st.write(f"Activités en lien avec : {ex_text}")
 
@@ -192,4 +193,19 @@ else:
     st.write(f"Total d'entreprises ouvertes : {sumxp}")
 
 
+# Liste des départements d'Île-de-France
+departements_idf = [
+    "Paris (75)",
+    "Seine-et-Marne (77)",
+    "Yvelines (78)",
+    "Essonne (91)",
+    "Hauts-de-Seine (92)",
+    "Seine-Saint-Denis (93)",
+    "Val-de-Marne (94)",
+    "Val-d’Oise (95)"
+]
 
+# Barre de sélection
+dep_selectionne = st.selectbox("Sélectionnez votre département :", departements_idf)
+
+st.write(f"Département choisi : {dep_selectionne}")
