@@ -1,5 +1,7 @@
 import streamlit as st
-
+from src.load_xgb import load_model, load_threshold
+from src.nlp import predict_ape
+import time
 
 # URL ou chemin local de l'image
 background_image = "https://images.unsplash.com/photo-1534841090574-cba2d662b62e?auto=format&fit=max&w=1920&q=80"
@@ -26,8 +28,17 @@ st.markdown(f"""
     position: fixed;
     top: 30px;
     left: 3px;
-    width: 300px;
+    width: 300px; /* taille PC */
     z-index: 100;
+}}
+
+/* --- pour mobile --- */
+@media (max-width: 768px) {{
+    #logo {{
+        width: 150px; 
+        top: 20px;
+        left: 10px;
+    }}
 }}
 </style>
 
@@ -56,8 +67,37 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Une seule ligne de texte
+
+def debounce(seconds=0.4):
+    time.sleep(seconds)
+
 objet = st.text_input("Votre projet brièvement (Exemple : Food truck burger) :")
+
+# On mémorise la dernière valeur
+if "last_objet" not in st.session_state:
+    st.session_state.last_objet = ""
+
+# Si l'utilisateur a changé le texte
+if objet != st.session_state.last_objet and objet != "":
+    st.session_state.last_objet = objet
+    debounce(0.4)
+
+    # --- BARRE DE CHARGEMENT ---
+    progress = st.progress(0)
+    for i in range(100):
+        time.sleep(0.05)
+        progress.progress(i + 1)
+
+    # --- PRÉDICTION ---
+    objet_predict = predict_ape(objet)
+
+    progress.empty()
+
+    ape_pred = objet_predict[0]
+    ex_text = objet_predict[2][0]
+
+    st.write(f"Code APE correspondant : {ape_pred}")
+    st.write(f"Activités en lien avec : {ex_text}")
 
 
 personneMorale = st.radio(

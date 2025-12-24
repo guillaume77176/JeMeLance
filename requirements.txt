@@ -6,3 +6,6 @@ matplotlib
 seaborn
 tqdm
 streamlit
+
+spacy
+langchain_community
