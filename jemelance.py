@@ -22,7 +22,7 @@ st.markdown(
 # URL de ton logo (tu peux uploader ton PNG sur un hébergeur comme Imgur, GitHub, ou Streamlit Cloud)
 logo_url = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/logo/logo.png"
 
-st.image("logo.png", width=250)
+st.image("logo.png", width=250,height=200)
 
 st.title("Je me lance ? 🤔 🚀🚀🚀")
 
