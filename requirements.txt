@@ -9,3 +9,4 @@ streamlit
 
 spacy
 langchain_community
+joblib
