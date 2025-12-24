@@ -24,9 +24,6 @@ logo_url = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/logo/logo.png"
 
 st.image("logo.png", use_column_width=True)
 
-<img id="logo" src="{logo_url}">
-""", unsafe_allow_html=True)
-
 st.title("Je me lance ? 🤔 🚀🚀🚀")
 
 st.markdown(
