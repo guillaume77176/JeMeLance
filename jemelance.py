@@ -41,6 +41,21 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+st.markdown(
+    "<h1 style='font-family:Arial; font-size:20px; color:White;'>Les prédictions sont réalisés à l'aide d'un modèle d'intelligence artificielle. Il donne pour les cinq années suivant la création d'entreprise les chances d'être radié du registre national des entreprises.</h1>",
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    "<h1 style='font-family:Arial; font-size:20px; color:White;'>Régions disponibles : Ile-De-France</h1>",
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    "<h1 style='font-family:Arial; font-size:10px; color:Red;'>A propos de la fiabilité des résultats : Evalué sur plus de dix ans de données cumulés, le modèle prédit correctement en moyenne 70% des entreprises qui ont été effectivement radiées au cours des cinq années suivants la création. Nous mettons en garde l'utilisateur avisé sur le fait que le modèle a tendance à donner de fausses alertes sur les chances de réussir. Il ne doit servir en aucun cas d'outils de décision final, mais est une simple vue globale de la réalité du tissu entrepreunarial d'île de France des 15 dernières années.</h1>",
+    unsafe_allow_html=True
+)
+
 # Une seule ligne de texte
 objet = st.text_input("Votre projet brièvement (Exemple : Food truck burger) :")
 
