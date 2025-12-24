@@ -22,25 +22,7 @@ st.markdown(
 # URL de ton logo (tu peux uploader ton PNG sur un hébergeur comme Imgur, GitHub, ou Streamlit Cloud)
 logo_url = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/logo/logo.png"
 
-st.markdown(f"""
-<style>
-#logo {{
-    position: fixed;
-    top: 30px;
-    left: 3px;
-    width: 300px; /* taille PC */
-    z-index: 100;
-}}
-
-/* --- pour mobile --- */
-@media (max-width: 768px) {{
-    #logo {{
-        width: 150px; 
-        top: 20px;
-        left: 10px;
-    }}
-}}
-</style>
+st.image("logo.png", use_column_width=True)
 
 <img id="logo" src="{logo_url}">
 """, unsafe_allow_html=True)
