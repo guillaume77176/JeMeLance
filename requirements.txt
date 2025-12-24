@@ -6,7 +6,3 @@ matplotlib
 seaborn
 tqdm
 streamlit
-
-#nlp pour conversion "description" vers code APE
-langchain_community.retrievers
-langchain_community.document_loaders
