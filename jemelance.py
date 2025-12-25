@@ -3,6 +3,11 @@ from src.load_xgb import load_model, load_threshold
 from src.nlp import predict_ape
 import time
 
+#Sélections des variables candiates : 
+var_cand = ["taille_ville","nb_local_concurrents",
+"revCommune","revDep"]
+
+
 # URL ou chemin local de l'image
 background_image = "https://images.unsplash.com/photo-1534841090574-cba2d662b62e?auto=format&fit=max&w=1920&q=80"
 
@@ -80,14 +85,26 @@ if objet != st.session_state.last_objet and objet != "":
     st.write(f"Activités en lien avec : {ex_text}")
 
 
-personneMorale = st.radio(
+capital = st.text_input("Montant du capital social initial prévu :", "")
+
+try:
+    test_capital = float(capital)
+    montantCapital = float(capital)
+    st.write("Votre capital social initial :", capital)
+except ValueError:
+    st.write("Veuillez entrer un nombre valide.")
+
+
+personneMorale_in = st.radio(
     "Vous souhaitez :",
     ["Ouvrir une micro-entreprise", "Ouvrir une activité en tant qu'entrepreneur individuel", "Ouvrir une entreprise de type SARL, SAS, EIRL"]
 )
 sumxp = 0
 mean_age = 0
 
-if personneMorale == "Ouvrir une entreprise de type SARL, SAS, EIRL":
+if personneMorale_in == "Ouvrir une entreprise de type SARL, SAS, EIRL":
+    personneMorale = 1
+    micro = 0
     nb_associe = st.slider(
         "Nombre d'associé prévu (max 5, si vous êtes seul selectionnez 1):",
         1, 5, 1
@@ -97,6 +114,12 @@ if personneMorale == "Ouvrir une entreprise de type SARL, SAS, EIRL":
         xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
         sumxp = xp1
 
+        xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+        sumxp_rad = xp1_rad
+
+        xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
+        sumxp_ape = xp1_ape
+
         age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
         mean_age = age1
 
@@ -104,9 +127,20 @@ if personneMorale == "Ouvrir une entreprise de type SARL, SAS, EIRL":
         col1, col2 = st.columns(2)
         with col1:
             xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
+            
+            xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+
+            xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col2:
             xp2 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 :", 0, 20, 0)
+
+            xp2_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°2:", 0, 20, 0)
+
+            xp2_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
+
         sumxp = xp1 + xp2
+        sumxp_rad = xp1_rad + xp2_rad
+        sumxp_ape = xp1_ape + xp2_ape
 
         with col1:
             age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
@@ -119,10 +153,22 @@ if personneMorale == "Ouvrir une entreprise de type SARL, SAS, EIRL":
         col1, col2, col3 = st.columns(3)
         with col1:
             xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
+            
+            xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+
+            xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col2:
             xp2 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 :", 0, 20, 0)
+
+            xp2_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°2:", 0, 20, 0)
+
+            xp2_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col3:
             xp3 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 :", 0, 20, 0)
+
+            xp3_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°3:", 0, 20, 0)
+
+            xp3_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
 
         with col1:
             age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
@@ -131,18 +177,36 @@ if personneMorale == "Ouvrir une entreprise de type SARL, SAS, EIRL":
         with col3:
             age3 = st.number_input("Quel est  l'âge de n°3 ?", min_value=0, max_value=120, value=30, step=1)
         sumxp = xp1 + xp2 + xp3
+        sumxp_rad = xp1_rad + xp2_rad + xp3_rad
+        sumxp_ape = xp1_ape + xp2_ape + xp3_ape
         mean_age = (age1 + age2 + age3)/3
 
     elif nb_associe == 4:
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
+            
+            xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+
+            xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col2:
             xp2 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 :", 0, 20, 0)
+
+            xp2_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°2:", 0, 20, 0)
+
+            xp2_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col3:
             xp3 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 :", 0, 20, 0)
+
+            xp3_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°3:", 0, 20, 0)
+
+            xp3_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col4:
             xp4 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°4 :", 0, 20, 0)
+
+            xp4_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°4:", 0, 20, 0)
+
+            xp4_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°4 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
 
         with col1:
             age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
@@ -153,21 +217,43 @@ if personneMorale == "Ouvrir une entreprise de type SARL, SAS, EIRL":
         with col4:
             age4 = st.number_input("Quel est  l'âge de n°4 ?", min_value=0, max_value=120, value=30, step=1)
         sumxp = xp1 + xp2 + xp3 + xp4
+        sumxp_rad = xp1_rad + xp2_rad + xp3_rad + xp4_rad
+        sumxp_ape = xp1_ape + xp2_ape + xp3_ape + xp4_ape
         mean_age = (age1 + age2 + age3 + age4)/4
 
 
     else:  # nb_associe == 5
         col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
-            xp1 = st.slider("Nombre d'entreprises ouvertes dans le passé par vous:", 0, 20, 0)
+            xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
+            
+            xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+
+            xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col2:
             xp2 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 :", 0, 20, 0)
+
+            xp2_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°2:", 0, 20, 0)
+
+            xp2_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col3:
             xp3 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 :", 0, 20, 0)
+
+            xp3_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°3:", 0, 20, 0)
+
+            xp3_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col4:
             xp4 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°4 :", 0, 20, 0)
+
+            xp4_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°4:", 0, 20, 0)
+
+            xp4_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°4 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
         with col5:
             xp5 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°5 :", 0, 20, 0)
+
+            xp5_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°5:", 0, 20, 0)
+
+            xp5_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°5 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
 
         with col1:
             age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
@@ -180,15 +266,40 @@ if personneMorale == "Ouvrir une entreprise de type SARL, SAS, EIRL":
         with col5:
             age5 = st.number_input("Quel est  l'âge de n°5 ?", min_value=0, max_value=120, value=30, step=1)
         sumxp = xp1 + xp2 + xp3 + xp4 + xp5
+        sumxp_rad = xp1_rad + xp2_rad + xp3_rad + xp4_rad + xp5_rad
+        sumxp_ape = xp1_ape + xp2_ape + xp3_ape + xp4_ape + xp5_ape
         mean_age = (age1 + age2 + age3 + age4 + age5)/5
     st.write(f"Total d'entreprises ouvertes par les associés : {sumxp}")
     st.write(f"Age moyen des associés : {mean_age}")
 
-else:
+elif personneMorale_in == "Ouvrir une activité en tant qu'entrepreneur individuel":
+    personneMorale = 1
+    micro = 0
     nb_associe = 1
-    xp = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
+    xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
+            
+    xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+
+    xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
     age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
-    sumxp = xp
+    sumxp = xp1
+    sumxp_rad = xp1_rad
+    sumxp_ape = xp1_ape
+    mean_age = age1
+    st.write(f"Total d'entreprises ouvertes : {sumxp}")
+else:
+    personneMorale = 1
+    micro = 1
+    nb_associe = 1
+    xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
+            
+    xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+
+    xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
+    age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
+    sumxp = xp1
+    sumxp_rad = xp1_rad
+    sumxp_ape = xp1_ape
     mean_age = age1
     st.write(f"Total d'entreprises ouvertes : {sumxp}")
 
@@ -205,7 +316,31 @@ departements_idf = [
     "Val-d’Oise (95)"
 ]
 
-# Barre de sélection
+#Département
 dep_selectionne = st.selectbox("Sélectionnez votre département :", departements_idf)
 
 st.write(f"Département choisi : {dep_selectionne}")
+
+if dep_selectionne == "Paris (75)":
+    cp = "75"
+elif dep_selectionne == "Seine-et-Marne (77)":
+    cp = "77"
+elif dep_selectionne == "Yvelines (78)":
+    cp = "78"
+elif dep_selectionne == "Essonne (91)":
+    cp = "91"
+elif dep_selectionne == "Hauts-de-Seine (92)":
+    cp = "92"
+elif dep_selectionne == "Seine-Saint-Denis (93)":
+    cp = "93"    
+elif dep_selectionne == "Val-de-Marne (94)":
+    cp = "94"
+else:
+    cp = "95"
+
+#Ville
+
+ville_selectionne = st.text_input("La ville dans laquelle vous souhaitez ouvrir votre activité : ", "")
+
+st.write(f"Ville selectionnée : {ville_selectionne}")
+
