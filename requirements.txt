@@ -12,3 +12,5 @@ langchain_community
 joblib
 
 scikit-learn
+
+requests
