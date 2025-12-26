@@ -5,15 +5,19 @@ polars
 matplotlib
 seaborn
 tqdm
+requests
+s3fs
+datetime
+
+#app
 streamlit
 
+#nlp
 spacy
 langchain_community
 joblib
 
+#ml
 scikit-learn
-
-requests
 xgboost
-s3fs
-datetime
+

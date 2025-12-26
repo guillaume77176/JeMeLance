@@ -1,6 +1,7 @@
 # JeMeLance
 ### Projet 2A ENSAE Python | Guillaume Roustan, Emmanuel Akoun
 
+Acceder à l'application streamlit developpée : https://jemelance.streamlit.app/ .
 
 Pour Emannuel : 
 
