@@ -536,9 +536,15 @@ if bouton == True:
 
     import os
     import s3fs
-    os.environ["AWS_ACCESS_KEY_ID"] = 'ZW1GS6FU1WLF2XJCDMUJ'
-    os.environ["AWS_SECRET_ACCESS_KEY"] = 'Z3ncLFnNvHV9iLgzUrdDjPXo3HJICjqnQm4q4n6L'
-    os.environ["AWS_SESSION_TOKEN"] = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJaVzFHUzZGVTFXTEYyWEpDRE1VSiIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzY2NzEzMzM3LCJhenAiOiJvbnl4aWEiLCJlbWFpbCI6Imd1aWxsYXVtZS5yb3VzdGFuQGVuc2FlLmZyIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6MTc2NzM0MTYwNiwiZmFtaWx5X25hbWUiOiJSb3VzdGFuIiwiZ2l2ZW5fbmFtZSI6Ikd1aWxsYXVtZSIsImdyb3VwcyI6WyJVU0VSX09OWVhJQSJdLCJpYXQiOjE3NjY3MzY4MDYsImlzcyI6Imh0dHBzOi8vYXV0aC5sYWIuc3NwY2xvdWQuZnIvYXV0aC9yZWFsbXMvc3NwY2xvdWQiLCJqdGkiOiJvbnJ0cnQ6OTc4MjgzM2UtMWViNy0wMjhkLTY2MWQtMTlmNGJkNTM1ZDdkIiwibG9jYWxlIjoiZnIiLCJuYW1lIjoiR3VpbGxhdW1lIFJvdXN0YW4iLCJwb2xpY3kiOiJzdHNvbmx5IiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZ3VpbGxhdW1lMTc2IiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtc3NwY2xvdWQiXSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBncm91cHMgZW1haWwiLCJzaWQiOiJiMjU0ZTNmMi0yYzdkLWY0NTMtN2VmNi02MTVhMTdjNWM5ZDgiLCJzdWIiOiI5Mjc4NzJjYi03NjgyLTRkNDAtYjliNy04M2IyYjk3YWRmMjgiLCJ0eXAiOiJCZWFyZXIifQ.x1QoqMhOEHt_4P9Tdc2-QvbC7ctIE-xngxZkXSE8bQv4c_0MIRVTQ2MkAgi7m7BLGAmCqjoddSva9jH-HdCXNA'
+
+    t1 = st.secrets["DB_1"]
+    t2 = st.secrets["DB_1_1"]
+    t3 = st.secrets["DB_1_2"]
+    st.write("Ton token :", t1,t2,t3)
+
+    os.environ["AWS_ACCESS_KEY_ID"] = t1
+    os.environ["AWS_SECRET_ACCESS_KEY"] = t2
+    os.environ["AWS_SESSION_TOKEN"] = t3
     os.environ["AWS_DEFAULT_REGION"] = 'us-east-1'
     fs = s3fs.S3FileSystem(
         client_kwargs={'endpoint_url': 'https://'+'minio.lab.sspcloud.fr'},
