@@ -5,14 +5,12 @@ from src.nlp import predict_ape
 import time
 import requests
 import pandas as pd
+import json
+import numpy
+import joblib
 
 
-#Sélections des variables candiates : 
-var_cand = ["taille_ville","nb_local_concurrents",
-"revCommune","revDep"]
-
-
-# URL ou chemin local de l'image
+# ----------------- Background et logo -----------------
 background_image = "https://images.unsplash.com/photo-1534841090574-cba2d662b62e?auto=format&fit=max&w=1920&q=80"
 
 st.markdown(
@@ -28,9 +26,8 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-# URL de ton logo (tu peux uploader ton PNG sur un hébergeur comme Imgur, GitHub, ou Streamlit Cloud)
-logo_url = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/logo/logo.png"
 
+logo_url = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/logo/logo.png"
 st.image("logo.png", width=300)
 
 st.title("Je me lance ? 🤔 🚀🚀🚀")
@@ -54,18 +51,28 @@ st.markdown(
     "<h1 style='font-family:Arial; font-size:10px; color:Red;'>A propos de la fiabilité des résultats : Evalué sur plus de dix ans de données cumulés, le modèle prédit correctement en moyenne 70% des entreprises qui ont été effectivement radiées au cours des cinq années suivants la création. Nous mettons en garde l'utilisateur avisé sur le fait que le modèle a tendance à donner de fausses alertes sur les chances de réussir. Il ne doit servir en aucun cas d'outils de décision final, mais est une simple vue globale de la réalité du tissu entrepreunarial d'île de France des 15 dernières années.</h1>",
     unsafe_allow_html=True
 )
-
-
-def debounce(seconds=0.4):
-    time.sleep(seconds)
-
-objet = st.text_input("Votre projet brièvement (Exemple : Food truck burger) :")
-
-# On mémorise la dernière valeur
+# ----------------- Initialisation session_state -----------------
 if "last_objet" not in st.session_state:
     st.session_state.last_objet = ""
 
-# Si l'utilisateur a changé le texte
+if "codeAPE" not in st.session_state:
+    st.session_state.codeAPE = ""  
+
+if "montantCapital" not in st.session_state:
+    st.session_state.montantCapital = 0
+
+
+
+# ----------------- Fonction debounce -----------------
+def debounce(seconds=0.4):
+    time.sleep(seconds)
+
+# ----------------- Input projet -----------------
+objet = st.text_input("Votre projet brièvement (Exemple : Food truck burger) :")
+
+if "last_objet" not in st.session_state:
+    st.session_state.last_objet = ""
+
 if objet != st.session_state.last_objet and objet != "":
     st.session_state.last_objet = objet
     debounce(0.4)
@@ -73,242 +80,103 @@ if objet != st.session_state.last_objet and objet != "":
     # --- BARRE DE CHARGEMENT ---
     progress = st.progress(0)
     for i in range(100):
-        time.sleep(0.15)
+        time.sleep(0.3)
         progress.progress(i + 1)
 
-    # --- PRÉDICTION ---
+    # --- PRÉDICTION APE ---
     objet_predict = predict_ape(objet)
-
     progress.empty()
 
-    ape_pred = objet_predict[0]
+    st.session_state.codeAPE = objet_predict[0]
     ex_text = objet_predict[2][0]
 
     st.write("Description chargée. Vous pouvez continuer.")
-    st.write(f"Code APE correspondant : {ape_pred}")
+    st.write(f"Code APE correspondant : {st.session_state.codeAPE}")
     st.write(f"Activités en lien avec : {ex_text}")
 
-
+# ----------------- Capital -----------------
 capital = st.text_input("Montant du capital social initial prévu :", "")
 
 try:
-    test_capital = float(capital)
     montantCapital = float(capital)
-    st.write("Votre capital social initial :", capital)
+    st.session_state.montantCapital = montantCapital
+    st.write("Votre capital social initial :", montantCapital)
 except ValueError:
     st.write("Veuillez entrer un nombre valide.")
 
-
+# ----------------- Type de société -----------------
 personneMorale_in = st.radio(
     "Vous souhaitez :",
     ["Ouvrir une micro-entreprise", "Ouvrir une activité en tant qu'entrepreneur individuel", "Ouvrir une entreprise de type SARL, SAS, EIRL"]
 )
-sumxp = 0
-mean_age = 0
 
+# Initialisation
+st.session_state.sumxp = 0
+st.session_state.mean_age = 0
+st.session_state.sumxp_rad = 0
+st.session_state.sumxp_ape = 0
+st.session_state.nb_associe = 1
+st.session_state.micro = 0
+st.session_state.personneMorale = 1
+
+# ----------------- Sliders et inputs associés -----------------
 if personneMorale_in == "Ouvrir une entreprise de type SARL, SAS, EIRL":
-    personneMorale = 1
-    micro = 0
-    nb_associe = st.slider(
-        "Nombre d'associé prévu (max 5, si vous êtes seul selectionnez 1):",
-        1, 5, 1
+    st.session_state.personneMorale = 1
+    st.session_state.micro = 0
+    st.session_state.nb_associe = st.slider(
+        "Nombre d'associé prévu (max 5, si vous êtes seul selectionnez 1):", 1, 5, 1
     )
-    
-    if nb_associe == 1:
-        xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
-        sumxp = xp1
 
-        xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
-        sumxp_rad = xp1_rad
+    nb_associe = st.session_state.nb_associe
 
-        xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        sumxp_ape = xp1_ape
+    # Génération des sliders et ages
+    age_list = []
+    xp_list = []
+    xp_rad_list = []
+    xp_ape_list = []
 
-        age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
-        mean_age = age1
+    cols = st.columns(nb_associe)
+    for i in range(nb_associe):
+        with cols[i]:
+            xp = st.slider(f"Nombre d'entreprises ouvertes dans le passé par n°{i+1} :", 0, 20, 0)
+            xp_rad = st.slider(f"Nombre d'entreprises ouvertes dans le passé radiés de n°{i+1}:", 0, 20, 0)
+            xp_ape = st.slider(f"Nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui par n°{i+1}:", 0, 20, 0)
+            age = st.number_input(f"Quel est l'âge de n°{i+1} ?", min_value=0, max_value=120, value=30, step=1)
+            xp_list.append(xp)
+            xp_rad_list.append(xp_rad)
+            xp_ape_list.append(xp_ape)
+            age_list.append(age)
 
-    elif nb_associe == 2:
-        col1, col2 = st.columns(2)
-        with col1:
-            xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
-            
-            xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+    st.session_state.sumxp = sum(xp_list)
+    st.session_state.sumxp_rad = sum(xp_rad_list)
+    st.session_state.sumxp_ape = sum(xp_ape_list)
+    st.session_state.mean_age = sum(age_list)/len(age_list)
 
-            xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col2:
-            xp2 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 :", 0, 20, 0)
-
-            xp2_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°2:", 0, 20, 0)
-
-            xp2_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-
-        sumxp = xp1 + xp2
-        sumxp_rad = xp1_rad + xp2_rad
-        sumxp_ape = xp1_ape + xp2_ape
-
-        with col1:
-            age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
-        with col2:
-            age2 = st.number_input("Quel est  l'âge de n°2 ?", min_value=0, max_value=120, value=30, step=1)
-        sumxp = xp1 + xp2
-        mean_age = (age1 + age2)/2
-
-    elif nb_associe == 3:
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
-            
-            xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
-
-            xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col2:
-            xp2 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 :", 0, 20, 0)
-
-            xp2_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°2:", 0, 20, 0)
-
-            xp2_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col3:
-            xp3 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 :", 0, 20, 0)
-
-            xp3_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°3:", 0, 20, 0)
-
-            xp3_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-
-        with col1:
-            age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
-        with col2:
-            age2 = st.number_input("Quel est  l'âge de n°2 ?", min_value=0, max_value=120, value=30, step=1)
-        with col3:
-            age3 = st.number_input("Quel est  l'âge de n°3 ?", min_value=0, max_value=120, value=30, step=1)
-        sumxp = xp1 + xp2 + xp3
-        sumxp_rad = xp1_rad + xp2_rad + xp3_rad
-        sumxp_ape = xp1_ape + xp2_ape + xp3_ape
-        mean_age = (age1 + age2 + age3)/3
-
-    elif nb_associe == 4:
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
-            
-            xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
-
-            xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col2:
-            xp2 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 :", 0, 20, 0)
-
-            xp2_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°2:", 0, 20, 0)
-
-            xp2_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col3:
-            xp3 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 :", 0, 20, 0)
-
-            xp3_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°3:", 0, 20, 0)
-
-            xp3_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col4:
-            xp4 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°4 :", 0, 20, 0)
-
-            xp4_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°4:", 0, 20, 0)
-
-            xp4_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°4 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-
-        with col1:
-            age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
-        with col2:
-            age2 = st.number_input("Quel est  l'âge de n°2 ?", min_value=0, max_value=120, value=30, step=1)
-        with col3:
-            age3 = st.number_input("Quel est  l'âge de n°3 ?", min_value=0, max_value=120, value=30, step=1)
-        with col4:
-            age4 = st.number_input("Quel est  l'âge de n°4 ?", min_value=0, max_value=120, value=30, step=1)
-        sumxp = xp1 + xp2 + xp3 + xp4
-        sumxp_rad = xp1_rad + xp2_rad + xp3_rad + xp4_rad
-        sumxp_ape = xp1_ape + xp2_ape + xp3_ape + xp4_ape
-        mean_age = (age1 + age2 + age3 + age4)/4
-
-
-    else:  # nb_associe == 5
-        col1, col2, col3, col4, col5 = st.columns(5)
-        with col1:
-            xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
-            
-            xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
-
-            xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col2:
-            xp2 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 :", 0, 20, 0)
-
-            xp2_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°2:", 0, 20, 0)
-
-            xp2_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°2 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col3:
-            xp3 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 :", 0, 20, 0)
-
-            xp3_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°3:", 0, 20, 0)
-
-            xp3_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°3 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col4:
-            xp4 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°4 :", 0, 20, 0)
-
-            xp4_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°4:", 0, 20, 0)
-
-            xp4_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°4 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-        with col5:
-            xp5 = st.slider("Nombre d'entreprises ouvertes dans le passé par n°5 :", 0, 20, 0)
-
-            xp5_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés de n°5:", 0, 20, 0)
-
-            xp5_ape = st.slider("Nombre d'entreprises ouvertes dans le passé par n°5 correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-
-        with col1:
-            age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
-        with col2:
-            age2 = st.number_input("Quel est  l'âge de n°2 ?", min_value=0, max_value=120, value=30, step=1)
-        with col3:
-            age3 = st.number_input("Quel est  l'âge de n°3 ?", min_value=0, max_value=120, value=30, step=1)
-        with col4:
-            age4 = st.number_input("Quel est  l'âge de n°4 ?", min_value=0, max_value=120, value=30, step=1)
-        with col5:
-            age5 = st.number_input("Quel est  l'âge de n°5 ?", min_value=0, max_value=120, value=30, step=1)
-        sumxp = xp1 + xp2 + xp3 + xp4 + xp5
-        sumxp_rad = xp1_rad + xp2_rad + xp3_rad + xp4_rad + xp5_rad
-        sumxp_ape = xp1_ape + xp2_ape + xp3_ape + xp4_ape + xp5_ape
-        mean_age = (age1 + age2 + age3 + age4 + age5)/5
-    st.write(f"Total d'entreprises ouvertes par les associés : {sumxp}")
-    st.write(f"Age moyen des associés : {mean_age}")
+    st.write(f"Total d'entreprises ouvertes par les associés : {st.session_state.sumxp}")
+    st.write(f"Age moyen des associés : {st.session_state.mean_age}")
 
 elif personneMorale_in == "Ouvrir une activité en tant qu'entrepreneur individuel":
-    personneMorale = 1
-    micro = 0
-    nb_associe = 1
-    xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
-            
-    xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+    st.session_state.personneMorale = 0
+    st.session_state.micro = 0
+    st.session_state.nb_associe = 1
 
-    xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-    age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
-    sumxp = xp1
-    sumxp_rad = xp1_rad
-    sumxp_ape = xp1_ape
-    mean_age = age1
-    st.write(f"Total d'entreprises ouvertes : {sumxp}")
+    st.session_state.sumxp = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
+    st.session_state.sumxp_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés :", 0, 20, 0)
+    st.session_state.sumxp_ape = st.slider("Correspondant à l'activité envisagée :", 0, 20, 0)
+    st.session_state.mean_age = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
+    st.write(f"Total d'entreprises ouvertes : {st.session_state.sumxp}")
+
 else:
-    personneMorale = 1
-    micro = 1
-    nb_associe = 1
-    xp1 = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
-            
-    xp1_rad = st.slider("Votre nombre d'entreprises ouvertes dans le passé radiés:", 0, 20, 0)
+    st.session_state.personneMorale = 0
+    st.session_state.micro = 1
+    st.session_state.nb_associe = 1
+    st.session_state.sumxp = st.slider("Votre nombre d'entreprises ouvertes dans le passé :", 0, 20, 0)
+    st.session_state.sumxp_rad = st.slider("Nombre d'entreprises ouvertes dans le passé radiés :", 0, 20, 0)
+    st.session_state.sumxp_ape = st.slider("Correspondant à l'activité envisagée :", 0, 20, 0)
+    st.session_state.mean_age = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
+    st.write(f"Total d'entreprises ouvertes : {st.session_state.sumxp}")
 
-    xp1_ape = st.slider("Votre nombre d'entreprises ouvertes dans le passé correspondants à l'activité envisagée aujourd'hui:", 0, 20, 0)
-    age1 = st.number_input("Quel est votre âge ?", min_value=0, max_value=120, value=30, step=1)
-    sumxp = xp1
-    sumxp_rad = xp1_rad
-    sumxp_ape = xp1_ape
-    mean_age = age1
-    st.write(f"Total d'entreprises ouvertes : {sumxp}")
-
-
-# Liste des départements d'Île-de-France
+# ----------------- Département -----------------
 departements_idf = [
     "Paris (75)",
     "Seine-et-Marne (77)",
@@ -320,34 +188,21 @@ departements_idf = [
     "Val-d’Oise (95)"
 ]
 
-#Département
 dep_selectionne = st.selectbox("Sélectionnez votre département :", departements_idf)
-
+st.session_state.cp = dep_selectionne.split("(")[1].replace(")", "")
 st.write(f"Département choisi : {dep_selectionne}")
 
-if dep_selectionne == "Paris (75)":
-    cp = "75"
-elif dep_selectionne == "Seine-et-Marne (77)":
-    cp = "77"
-elif dep_selectionne == "Yvelines (78)":
-    cp = "78"
-elif dep_selectionne == "Essonne (91)":
-    cp = "91"
-elif dep_selectionne == "Hauts-de-Seine (92)":
-    cp = "92"
-elif dep_selectionne == "Seine-Saint-Denis (93)":
-    cp = "93"    
-elif dep_selectionne == "Val-de-Marne (94)":
-    cp = "94"
-else:
-    cp = "95"
-
-
-
-#Import des data frames utiles
+# ----------------- Import data -----------------
 @st.cache_data
 def import_base():
     data = load_base()
+    data["taille_ville"] = data["pop_commune"].apply(
+        lambda x: "village" if x < 5000
+        else "little" if x < 25000
+        else "middle" if x < 50000
+        else "big"
+    )
+    data["cp"] = data["code_postal"].str[:2]
     return data
 
 @st.cache_data
@@ -358,14 +213,8 @@ def import_ville():
     return data
 
 def is_adresse(adresse_input):
-    # Adresse à rechercher
-    query = adresse_input
-
-    # Requête à l'API officielle
-    response = requests.get(f"https://api-adresse.data.gouv.fr/search/?q={query}")
+    response = requests.get(f"https://api-adresse.data.gouv.fr/search/?q={adresse_input}")
     data = response.json()
-
-    # Extraction de l'adresse, latitude et longitude
     results = []
     for feature in data["features"]:
         adresse = feature["properties"]["label"]
@@ -377,43 +226,162 @@ def is_adresse(adresse_input):
         })
     return results
 
+def get_info_local(base_df, code_insee, code_ape):
+    code_ape = str(code_ape)
+    code_insee = str(code_insee)
+    base_df["codeInseeCommune"] = base_df["codeInseeCommune"].astype(str)
 
+    if code_insee != "75056":
+        info_df = base_df.loc[base_df["codeInseeCommune"] == code_insee]
+        concu_df = base_df.loc[(base_df["codeInseeCommune"] == code_insee) & (base_df["codeAPE"] == code_ape)]
+    else:
+        info_df = base_df.loc[base_df["cp"] == "75"]
+        concu_df = base_df.loc[(base_df["cp"] == "75") & (base_df["codeAPE"] == code_ape)]
 
-codes_postaux_paris = [
-    "75001", "75002", "75003", "75004", "75005", "75006", "75007", "75008", "75009", "75010",
-    "75011", "75012", "75013", "75014", "75015", "75016", "75017", "75018", "75019", "75020"
-]
+    nb_local_concurrents = concu_df["nb_local_concurrents"].iloc[0] if not concu_df.empty else 0
+    revCommune = info_df["revCommune"].iloc[0]
+    revDep = info_df["revDep"].iloc[0]
+    taille_ville = info_df["taille_ville"].iloc[0]
 
+    return revCommune, revDep, taille_ville, nb_local_concurrents
+
+# ----------------- Ville -----------------
+
+codes_postaux_paris = [f"750{i:02}" for i in range(1, 21)]
 base_df = import_base()
 ville_df = import_ville()
-
-df_select = ville_df.loc[ville_df["cp"] == cp]
+df_select = ville_df.loc[ville_df["cp"] == st.session_state.cp]
 nom_ville_maj = df_select["nom_standard_majuscule"]
-cp_ville = ville_df.loc[ville_df["cp"] == cp]["code_postal"]
-codeInsee_ville = ville_df["code_insee"]
+cp_ville = df_select["code_postal"]
 
-#Ville
 ville_selectionne = st.selectbox("La ville dans laquelle vous souhaitez ouvrir votre activité : ", list(nom_ville_maj))
-
 ville = ville_selectionne.upper()
-
 codeInseeCommune = df_select.loc[df_select["nom_standard_majuscule"] == ville]["code_insee"].iloc[0]
-
-
+st.session_state.codeInseeCommune = codeInseeCommune
 st.write(f"Ville selectionnée : {ville_selectionne} | Code Insee : {codeInseeCommune}")
 
-if cp !="75":
-    code_postal= st.selectbox("Code postal :", list(cp_ville))
+if st.session_state.cp != "75":
+    code_postal = st.selectbox("Code postal :", list(cp_ville))
 else:
-    code_postal= st.selectbox("Code postal :", codes_postaux_paris)
-
+    code_postal = st.selectbox("Code postal :", codes_postaux_paris)
+st.session_state.code_postal = code_postal
 
 nomvoie_select = st.text_input("Adresse envisagé pour l'ouverture de votre activité :", "Exemple : 64 Mail de la Fontaine Ronde")
 
 if nomvoie_select != "Exemple : 64 Mail de la Fontaine Ronde":
     adresse_tot =  nomvoie_select.lower() + " ," + ville.lower()
+    try:
+        is_adresse_dict = is_adresse(adresse_tot)
+        is_adresse_tot = is_adresse_dict[0]["adresse"]
+        st.write(f"Votre adresse : {is_adresse_tot}")
+    except IndexError:
+        st.write("Veuillez rentrer une adresse valide.")
 
-    is_adresse_dict = is_adresse(adresse_tot)
-    is_adresse_tot = is_adresse_dict[0]["adresse"]
 
-    st.write(f"Votre adresse : {is_adresse_tot}")
+# ----------------- Info locale -----------------
+try:
+    info_local = get_info_local(base_df, st.session_state.codeInseeCommune, st.session_state.codeAPE)
+    st.session_state.revCommune = info_local[0]
+    st.session_state.revDep = info_local[1]
+    st.session_state.taille_ville = info_local[2]
+    st.session_state.nb_local_concurrents = info_local[3]
+except NameError as e:
+    st.write("Nous sommes désoler, votre adresse n'est pas encore disponible.")
+except IndexError:
+    st.write("Nous sommes désoler, votre adresse n'est pas encore disponible.")
+
+                            ####################################################
+                            #################### PREDICTION ####################
+                            ####################################################
+
+try:
+    var_cand = [
+        st.session_state.cp,
+        st.session_state.taille_ville,
+        st.session_state.mean_age,
+        st.session_state.nb_associe,
+        st.session_state.nb_local_concurrents,
+        st.session_state.revCommune,
+        st.session_state.sumxp,
+        st.session_state.sumxp_rad,
+        st.session_state.sumxp_ape,
+        st.session_state.codeAPE,
+        st.session_state.montantCapital,
+        st.session_state.personneMorale,
+        st.session_state.micro,
+        st.session_state.revDep
+    ]
+
+except NameError as e:
+    st.markdown(
+        f"<span style='color:red'>Erreur : {e}. Veuillez renseigner l'ensemble des informations pour effectuer une prédiction.</span>",
+        unsafe_allow_html=True
+    )
+
+st.write("Récapitualtif de vos saisis : ")
+df_predict = pd.DataFrame([var_cand],columns = ["cp","taille_ville","mean_age","nb_associe","nb_local_concurrents",
+"revCommune","sumxp","sumxp_rad","sumxp_ape","codeAPE","montantCapital","personneMorale","micro","revDep"])
+
+st.dataframe(df_predict)
+
+# ----------------- Bouton prédiction -----------------
+bouton = st.button("Lancer la prédiction : Vais-je me lancer ?")
+
+if bouton == True:
+    # ----------------- Fonctions de récupération des modèles et des seuils -----------------
+    @st.cache_resource
+    def load_model():
+        
+        model1 = joblib.load("src/xgb_radié1.pkl")
+        model2 = joblib.load("src/xgb_radié2.pkl")
+        model3 = joblib.load("src/xgb_radié3.pkl")
+        model4 = joblib.load("src/xgb_radié4.pkl")
+        model5 = joblib.load("src/xgb_radié5.pkl")
+
+        return model1,model2,model3,model4,model5
+
+    @st.cache_data
+    def load_threshold():
+
+        with open("src/seuils_proba_xgb.json", "r") as f:
+            liste_th = json.load(f)
+            
+        return liste_th
+
+    models_list = load_model()
+    seuils_list = load_threshold()
+
+    # ----------------- Prédiction selon les années i après la création -----------------
+
+    model1 = models_list[0]
+    model2 = models_list[1]
+    model3 = models_list[2]
+    model4 = models_list[3]
+    model5 = models_list[4]
+
+    th1 = seuils_list[0]
+    th2 = seuils_list[1]
+    th3 = seuils_list[2]
+    th4 = seuils_list[3]
+    th5 = seuils_list[4]
+
+    prob1 = model1.predict_proba(df_predict)[:,1]
+    prob2 = model2.predict_proba(df_predict)[:,1]
+    prob3 = model3.predict_proba(df_predict)[:,1]
+    prob4 = model4.predict_proba(df_predict)[:,1]
+    prob5 = model5.predict_proba(df_predict)[:,1]
+
+
+    radié1_pred = [1 if p >= th1 else 0 for p in prob1][0]
+    radié2_pred = [1 if p >= th2 else 0 for p in prob2][0]
+    radié3_pred = [1 if p >= th3 else 0 for p in prob3][0]
+    radié4_pred = [1 if p >= th4 else 0 for p in prob4][0]
+    radié5_pred = [1 if p >= th5 else 0 for p in prob5][0]
+
+    st.write(f"Pred année 1 : {radié1_pred}, {prob1}, {th1}")
+    st.write(f"Pred année 2 : {radié2_pred}, {prob2}, {th2}")
+    st.write(f"Pred année 3 : {radié3_pred}, {prob3}, {th3}")
+    st.write(f"Pred année 4 : {radié4_pred}, {prob4}, {th4}")
+    st.write(f"Pred année 5 : {radié5_pred}, {prob5}, {th5}")
+
+    st.write(f"{models_list}")
