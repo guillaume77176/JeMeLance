@@ -6,9 +6,9 @@ import time
 import requests
 import pandas as pd
 import json
-import numpy
 import joblib
 
+st.markdown('<div id="top"></div>', unsafe_allow_html=True)
 
 # ----------------- Background et logo -----------------
 background_image = "https://images.unsplash.com/photo-1534841090574-cba2d662b62e?auto=format&fit=max&w=1920&q=80"
@@ -47,10 +47,26 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown(
-    "<h1 style='font-family:Arial; font-size:10px; color:Red;'>A propos de la fiabilité des résultats : Evalué sur plus de dix ans de données cumulés, le modèle prédit correctement en moyenne 70% des entreprises qui ont été effectivement radiées au cours des cinq années suivants la création. Nous mettons en garde l'utilisateur avisé sur le fait que le modèle a tendance à donner de fausses alertes sur les chances de réussir. Il ne doit servir en aucun cas d'outils de décision final, mais est une simple vue globale de la réalité du tissu entrepreunarial d'île de France des 15 dernières années.</h1>",
-    unsafe_allow_html=True
-)
+st.markdown(f"""
+<div style="
+    background-color: #fff8e1;  /* fond jaune très clair */
+    color: #333333;              /* texte sombre */
+    padding: 15px 20px;          /* espace intérieur */
+    border-left: 5px solid #f7c948; /* accent coloré à gauche */
+    border-radius: 8px;          /* coins arrondis */
+    font-size: 14px;             /* texte lisible */
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    max-width: 700px;            /* largeur max */
+    margin: 15px auto;           /* centrer horizontalement */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* ombre légère */
+    line-height: 1.5;
+">
+<b>A propos de la fiabilité des résultats :</b> Évalué sur plus de dix ans de données cumulées, le modèle prédit correctement en moyenne 70% des entreprises qui ont été effectivement radiées au cours des cinq années suivant la création. Nous mettons en garde l'utilisateur avisé sur le fait que le modèle a tendance à donner de fausses alertes sur les chances d'échouer. Autrement dit, il se montre souvent pessimiste. Il ne doit servir en aucun cas d'outil de décision final, mais est une simple vue globale de la réalité du tissu entrepreneurial d'Île-de-France des 15 dernières années.
+</div>
+""", unsafe_allow_html=True)
+
+
+
 # ----------------- Initialisation session_state -----------------
 if "last_objet" not in st.session_state:
     st.session_state.last_objet = ""
@@ -322,7 +338,12 @@ st.write("Récapitualtif de vos saisis : ")
 df_predict = pd.DataFrame([var_cand],columns = ["cp","taille_ville","mean_age","nb_associe","nb_local_concurrents",
 "revCommune","sumxp","sumxp_rad","sumxp_ape","codeAPE","montantCapital","personneMorale","micro","revDep"])
 
-st.dataframe(df_predict)
+
+df_recap = pd.DataFrame([var_cand],columns = ["code_postal","Taille moyenne de votre ville","Moyenne d'âge des associés","Nombre d'associés","Nombre estimé de vos concurents locaux",
+"Revenue moyen des habitants locaux","Total des expériences","Total des expériences radiées","Total des expériences cohérentes avec votre projet","APE de votre activité","Capital social envisagé","Vous êtes une personne morale (1)","Micro (1)","Revenue moyen des habitants département"])
+
+
+st.dataframe(df_recap)
 
 # ----------------- Bouton prédiction -----------------
 bouton = st.button("Lancer la prédiction : Vais-je me lancer ?")
@@ -378,10 +399,106 @@ if bouton == True:
     radié4_pred = [1 if p >= th4 else 0 for p in prob4][0]
     radié5_pred = [1 if p >= th5 else 0 for p in prob5][0]
 
-    st.write(f"Pred année 1 : {radié1_pred}, {prob1}, {th1}")
-    st.write(f"Pred année 2 : {radié2_pred}, {prob2}, {th2}")
-    st.write(f"Pred année 3 : {radié3_pred}, {prob3}, {th3}")
-    st.write(f"Pred année 4 : {radié4_pred}, {prob4}, {th4}")
-    st.write(f"Pred année 5 : {radié5_pred}, {prob5}, {th5}")
+    radié_list = [radié1_pred,radié2_pred,radié3_pred,radié4_pred,radié5_pred]
 
-    st.write(f"{models_list}")
+    st.markdown("""
+        <style>
+            .pred-container {
+                text-align: center;
+                margin-top: 30px;
+                font-family: 'Inter', sans-serif;
+            }
+            .pred-title {
+                font-size: 28px;
+                font-weight: 600;
+                margin-bottom: 25px;
+                color: #333333;
+            }
+            .pred-card {
+                background: #ffffff;
+                padding: 25px;
+                margin: 20px auto;
+                width: 75%;
+                border-radius: 14px;
+                box-shadow: 0px 4px 16px rgba(0,0,0,0.10);
+                font-size: 18px;
+                line-height: 1.6;
+                text-align: center;
+            }
+            .pred-ok {
+                color: #117A65;
+                font-weight: 600;
+            }
+            .pred-risk {
+                color: #C0392B;
+                font-weight: 600;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
+
+
+
+    radié_list = [radié1_pred, radié2_pred, radié3_pred, radié4_pred, radié5_pred]
+    messages_pred = []
+
+    for i in range(5):
+        pred = radié_list[i]
+
+        if pred == 0:
+            messages_pred.append({
+                "annee": i,
+                "msg": f"A priori, il y a peu de chances pour que votre activité soit radiée au cours de l'année {i} après sa création. Feu vert pour l'instant.",
+                "type": "ok"
+            })
+        else:
+            messages_pred.append({
+                "annee": i,
+                "msg": f"Cependant, il semblerait qu'il y ait de fortes chances que votre activité soit radiée au cours de l'année {i}. Penchez-vous davantage sur l'évaluation du projet !",
+                "type": "risk"
+            })
+            break
+
+    #si pas de radiation jusqu'à l'année 5
+    if len(messages_pred) == 5 and radié_list[-1] == 0:
+        messages_pred.append({
+            "annee": 5,
+            "msg": "A priori, il y a peu de chances pour que votre activité soit radiée dans les 5 ans suivant sa création. LANCEZ-VOUS !!!",
+            "type": "ok"
+        })
+
+
+
+    st.markdown("""
+    <div class="pred-container">
+        <div class="pred-title" style="color:#F1C40F;">📊 Résultats de la prédiction</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    for item in messages_pred:
+        classe = "pred-ok" if item["type"] == "ok" else "pred-risk"
+        st.markdown(
+            f"""
+            <div class="pred-card">
+                <strong style="color: black;">Année {item['annee']} — Risque de radiation</strong><br><br>
+                <span class="{classe}">{item['msg']}</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    #bouton pour retourner en haut"
+    st.markdown("""
+    <div style="text-align:center; margin-top:20px;">
+        <a href="#top" style="
+            text-decoration:none;
+            background-color:#f7c948;
+            color:#111;
+            padding:10px 20px;
+            border-radius:5px;
+            font-weight:bold;
+            font-family:'Segoe UI', Tahoma, sans-serif;
+        ">🔝 Nouvelles idées ?</a>
+    </div>
+    """, unsafe_allow_html=True)
