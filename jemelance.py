@@ -1,7 +1,11 @@
 import streamlit as st
 from src.load_xgb import load_model, load_threshold
+from src.data.load_idf_10_24 import load_base, load_base_ville
 from src.nlp import predict_ape
 import time
+import requests
+import pandas as pd
+
 
 #Sélections des variables candiates : 
 var_cand = ["taille_ville","nb_local_concurrents",
@@ -338,9 +342,45 @@ elif dep_selectionne == "Val-de-Marne (94)":
 else:
     cp = "95"
 
-#Ville
 
-ville_selectionne = st.text_input("La ville dans laquelle vous souhaitez ouvrir votre activité : ", "")
+
+#Import des data frames utiles
+@st.cache_data
+def import_base():
+    data = load_base()
+    return data
+
+@st.cache_data
+def import_ville():
+    data = load_base_ville()
+    data["code_postal"] = data["code_postal"].astype(str)
+    data["cp"] = data["code_postal"].str[:2]
+    return data
+
+
+
+
+base_df = import_base()
+ville_df = import_ville()
+
+
+nom_ville_maj = ville_df.loc[ville_df["cp"] == cp]["nom_standard_majuscule"]
+cp_ville = ville_df.loc[ville_df["cp"] == cp]["code_postal"]
+codeInsee_ville = ville_df["code_insee"]
+
+#Ville
+ville_selectionne = st.selectbox("La ville dans laquelle vous souhaitez ouvrir votre activité : ", list(nom_ville_maj))
 
 st.write(f"Ville selectionnée : {ville_selectionne}")
 
+ville = ville_selectionne.upper()
+
+
+code_postal= st.selectbox("Votre code postal :", list(cp_ville))
+
+
+
+st.write("Renseignez votre adresse : ")
+numvoie_select = st.text_input("Numéro de voie :", " ")
+
+nomvoie_select = st.text_input("Nom de voie :", "Exemple : Rue de Paris")
