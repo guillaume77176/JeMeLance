@@ -15,3 +15,6 @@ scikit-learn
 
 requests
 xgboost
+os
+s3fs
+datetime
