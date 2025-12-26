@@ -30,41 +30,52 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-logo_url = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/logo/logo.png"
-st.image("logo.png", width=300)
+col1, col2 = st.columns([4, 1])
+
+with col1:
+    st.image("logo.png", width=300)
+
+with col2:
+    st.image("logoENSAE.png", width=300)
+    st.markdown(
+    "<h1 style='font-family:Jumble; font-size:10px; color:White;'>Projet ENSAE 2A Python <br> Guillaume Roustan | Emmanuel Akoun </h1>",
+    unsafe_allow_html=True)
+
+
+
 
 st.title("Je me lance ? 🤔 🚀🚀🚀")
 
 st.markdown(
-    "<h1 style='font-family:Arial; font-size:20px; color:White;'>Avec JeMeLance, n'ayez plus de doutes sur votre projet d'entreprise ! Envie de démarrer une activité dans les secteurs du commerce et de l'artisanat ? Entrer vos informations personnelles et une description brève de votre projet pour connaitre vos chances de réusssir !</h1>",
+    "<h1 style='font-family:Jumble; font-size:20px; color:White;'>Avec JeMeLance, n'ayez plus de doutes sur votre projet d'entreprise ! Envie de démarrer une activité dans les secteurs du commerce et de l'artisanat ? Entrer vos informations personnelles et une description brève de votre projet pour connaitre vos chances de réusssir !</h1>",
     unsafe_allow_html=True
 )
 
 st.markdown(
-    "<h1 style='font-family:Arial; font-size:20px; color:White;'>Les prédictions sont réalisés à l'aide d'un modèle d'intelligence artificielle. Il donne pour les cinq années suivant la création d'entreprise les chances d'être radié du registre national des entreprises.</h1>",
+    "<h1 style='font-family:Jumble; font-size:20px; color:White;'>Les prédictions sont réalisés à l'aide d'un modèle d'intelligence artificielle. Il donne pour les cinq années suivant la création d'entreprise les chances d'être radié du registre national des entreprises.</h1>",
     unsafe_allow_html=True
 )
 
 st.markdown(
-    "<h1 style='font-family:Arial; font-size:20px; color:White;'>Régions disponibles : Ile-De-France</h1>",
+    "<h1 style='font-family:Jumble; font-size:20px; color:White;'>Régions disponibles : Ile-De-France</h1>",
     unsafe_allow_html=True
 )
 
 st.markdown(f"""
 <div style="
-    background-color: #fff8e1;  /* fond jaune très clair */
-    color: #333333;              /* texte sombre */
-    padding: 15px 20px;          /* espace intérieur */
-    border-left: 5px solid #f7c948; /* accent coloré à gauche */
-    border-radius: 8px;          /* coins arrondis */
-    font-size: 14px;             /* texte lisible */
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    max-width: 700px;            /* largeur max */
-    margin: 15px auto;           /* centrer horizontalement */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* ombre légère */
+    background-color: #fff8e1; 
+    color: #333333;             
+    padding: 15px 20px;          
+    border-left: 5px solid #f7c948;
+    border-radius: 8px;       
+    font-size: 14px;            
+    font-family: Franklin Gothic Demi;
+    max-width: 700px;       
+    margin: 15px auto;         
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
     line-height: 1.5;
 ">
-<b>A propos de la fiabilité des résultats :</b> Évalué sur plus de dix ans de données cumulées, le modèle prédit correctement en moyenne 70% des entreprises qui ont été effectivement radiées au cours des cinq années suivant la création. Nous mettons en garde l'utilisateur avisé sur le fait que le modèle a tendance à donner de fausses alertes sur les chances d'échouer. Autrement dit, il se montre souvent pessimiste. Il ne doit servir en aucun cas d'outil de décision final, mais est une simple vue globale de la réalité du tissu entrepreneurial d'Île-de-France des 15 dernières années.
+<b>⚠️ A propos de la fiabilité des résultats :</b> Évalué sur plus de dix ans de données cumulées, le modèle prédit correctement en moyenne 70% des entreprises qui ont été effectivement radiées au cours des cinq années suivant la création. Nous mettons en garde l'utilisateur avisé sur le fait que le modèle a tendance à donner de fausses alertes sur les chances d'échouer. Autrement dit, il se montre souvent pessimiste à tord. Il ne doit servir en aucun cas d'outil de décision final, mais est une simple vue globale de la réalité du tissu entrepreneurial d'Île-de-France de ces 10 dernières années.
 </div>
 """, unsafe_allow_html=True)
 
@@ -96,8 +107,6 @@ with col2:
 
 
 
-
-# ----------------- Fonction debounce -----------------
 def debounce(seconds=0.4):
     time.sleep(seconds)
 
@@ -352,17 +361,18 @@ except NameError as e:
         unsafe_allow_html=True
     )
 
-st.write("Récapitualtif de vos saisis : ")
+st.write("Récapitualtif de vos saisis et informations supplémentaires : ")
 df_predict = pd.DataFrame([var_cand],columns = ["cp","taille_ville","mean_age","nb_associe","nb_local_concurrents",
 "revCommune","sumxp","sumxp_rad","sumxp_ape","codeAPE","montantCapital","personneMorale","micro","revDep"])
 
 
-df_recap = pd.DataFrame([var_cand],columns = ["code_postal","Taille moyenne de votre ville","Moyenne d'âge des associés","Nombre d'associés","Nombre estimé de vos concurents locaux",
+df_recap = pd.DataFrame([var_cand],columns = ["Code Postal","Taille moyenne de votre ville","Moyenne d'âge des associés","Nombre d'associés","Nombre estimé de vos concurents locaux",
 "Revenue moyen des habitants locaux","Total des expériences","Total des expériences radiées","Total des expériences cohérentes avec votre projet","APE de votre activité","Capital social envisagé","Vous êtes une personne morale (1)","Micro (1)","Revenue moyen des habitants département"])
 
-
-st.dataframe(df_recap)
-
+st.dataframe(
+    df_recap.style
+        .set_properties(**{'background-color': 'lavender', 'color': 'black', 'border-color': 'white'})
+)
 # ----------------- Bouton prédiction -----------------
 bouton = st.button("Lancer la prédiction : Vais-je me lancer ?")
 
@@ -523,12 +533,13 @@ if bouton == True:
 
     now = datetime.now()
 
-    list_log = var_cand + radié_list + [st.session_state.prenom, st.session_state.nom, now]
+    list_log = var_cand + radié_list + [st.session_state.prenom, st.session_state.nom,st.session_state.last_objet, now]
 
     data_log = pd.DataFrame([list_log],columns = ["cp","taille_ville","mean_age","nb_associe","nb_local_concurrents",
     "revCommune","sumxp","sumxp_rad","sumxp_ape","codeAPE","montantCapital","personneMorale","micro","revDep","radié1",
-    "radié2","radié3","radié4","radié5","prenom","nom","date"])
+    "radié2","radié3","radié4","radié5","prenom","nom","objet","date"])
 
+    
     url_log = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_app/log.parquet"
     past_log = pd.read_parquet(url_log)
 
