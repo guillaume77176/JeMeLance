@@ -25,8 +25,3 @@ data = pd.read_parquet(url, engine = "pyarrow") #enlève engine = "pyarrow" si e
 ````
 
 
-Token pour projet : 
-
-``` text
-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
-````
