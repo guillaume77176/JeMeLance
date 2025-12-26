@@ -7,6 +7,9 @@ import requests
 import pandas as pd
 import json
 import joblib
+import os
+import s3fs
+from datetime import datetime
 
 st.markdown('<div id="top"></div>', unsafe_allow_html=True)
 
@@ -462,13 +465,13 @@ if bouton == True:
 
         if pred == 0:
             messages_pred.append({
-                "annee": i,
+                "annee": i+1,
                 "msg": f"A priori, il y a peu de chances pour que votre activité soit radiée au cours de l'année {i} après sa création. Feu vert pour l'instant.",
                 "type": "ok"
             })
         else:
             messages_pred.append({
-                "annee": i,
+                "annee": i+1,
                 "msg": f"Cependant, il semblerait qu'il y ait de fortes chances que votre activité soit radiée au cours de l'année {i}. Penchez-vous davantage sur l'évaluation du projet !",
                 "type": "risk"
             })
@@ -495,7 +498,7 @@ if bouton == True:
         st.markdown(
             f"""
             <div class="pred-card">
-                <strong style="color: black;">Année {item['annee']} — Risque de radiation</strong><br><br>
+                <strong style="color: black;">Année {item['annee']} après la création — Feu vert ? </strong><br><br>
                 <span class="{classe}">{item['msg']}</span>
             </div>
             """,
@@ -518,8 +521,6 @@ if bouton == True:
     </div>
     """, unsafe_allow_html=True)
 
-    from datetime import datetime
-
     now = datetime.now()
 
     list_log = var_cand + radié_list + [st.session_state.prenom, st.session_state.nom, now]
@@ -534,13 +535,10 @@ if bouton == True:
     data_log = pd.concat([past_log,data_log])
 
 
-    import os
-    import s3fs
 
     t1 = st.secrets["DB_1"]
     t2 = st.secrets["DB_1_1"]
     t3 = st.secrets["DB_1_2"]
-    st.write("Ton token :", t1,t2,t3)
 
     os.environ["AWS_ACCESS_KEY_ID"] = t1
     os.environ["AWS_SECRET_ACCESS_KEY"] = t2
