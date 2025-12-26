@@ -357,30 +357,63 @@ def import_ville():
     data["cp"] = data["code_postal"].str[:2]
     return data
 
+def is_adresse(adresse_input):
+    # Adresse à rechercher
+    query = adresse_input
+
+    # Requête à l'API officielle
+    response = requests.get(f"https://api-adresse.data.gouv.fr/search/?q={query}")
+    data = response.json()
+
+    # Extraction de l'adresse, latitude et longitude
+    results = []
+    for feature in data["features"]:
+        adresse = feature["properties"]["label"]
+        lon, lat = feature["geometry"]["coordinates"]
+        results.append({
+            "adresse": adresse,
+            "latitude": lat,
+            "longitude": lon
+        })
+    return results
 
 
+
+codes_postaux_paris = [
+    "75001", "75002", "75003", "75004", "75005", "75006", "75007", "75008", "75009", "75010",
+    "75011", "75012", "75013", "75014", "75015", "75016", "75017", "75018", "75019", "75020"
+]
 
 base_df = import_base()
 ville_df = import_ville()
 
-
-nom_ville_maj = ville_df.loc[ville_df["cp"] == cp]["nom_standard_majuscule"]
+df_select = ville_df.loc[ville_df["cp"] == cp]
+nom_ville_maj = df_select["nom_standard_majuscule"]
 cp_ville = ville_df.loc[ville_df["cp"] == cp]["code_postal"]
 codeInsee_ville = ville_df["code_insee"]
 
 #Ville
 ville_selectionne = st.selectbox("La ville dans laquelle vous souhaitez ouvrir votre activité : ", list(nom_ville_maj))
 
-st.write(f"Ville selectionnée : {ville_selectionne}")
-
 ville = ville_selectionne.upper()
 
-
-code_postal= st.selectbox("Votre code postal :", list(cp_ville))
-
+codeInseeCommune = df_select.loc[df_select["nom_standard_majuscule"] == ville]["code_insee"].iloc[0]
 
 
-st.write("Renseignez votre adresse : ")
-numvoie_select = st.text_input("Numéro de voie :", " ")
+st.write(f"Ville selectionnée : {ville_selectionne} | Code Insee : {codeInseeCommune}")
 
-nomvoie_select = st.text_input("Nom de voie :", "Exemple : Rue de Paris")
+if cp !="75":
+    code_postal= st.selectbox("Code postal :", list(cp_ville))
+else:
+    code_postal= st.selectbox("Code postal :", codes_postaux_paris)
+
+
+nomvoie_select = st.text_input("Adresse envisagé pour l'ouverture de votre activité :", "Exemple : 64 Mail de la Fontaine Ronde")
+
+if nomvoie_select != "Exemple : 64 Mail de la Fontaine Ronde":
+    adresse_tot =  nomvoie_select.lower() + " ," + ville.lower()
+
+    is_adresse_dict = is_adresse(adresse_tot)
+    is_adresse_tot = is_adresse_dict[0]["adresse"]
+
+    st.write(f"Votre adresse : {is_adresse_tot}")
