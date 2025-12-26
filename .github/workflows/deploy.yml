@@ -1,0 +1,26 @@
+name: Déployer Streamlit
+
+on:
+  push:
+    branches:
+      - main  # le workflow se lance à chaque push sur main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # serveur virtuel fourni par GitHub
+
+    steps:
+      - uses: actions/checkout@v3  # récupérer le code du dépôt
+
+      - name: Installer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install streamlit requests
+
+      - name: Lancer Streamlit avec le secret
+        env:
+          MY_TOKEN: ${{ secrets.S1 }}  # ton secret GitHub
+        run: streamlit run app.py
