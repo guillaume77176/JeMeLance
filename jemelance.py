@@ -496,7 +496,7 @@ if bouton == True:
         messages_pred.append({
                 "annee": 5,
                 "msg": f"Il semble que votre projet pourra survivre aux 5 premières années. Lancez vous !!! ",
-                "type": "risk"
+                "type": "ok"
             })
 
 
