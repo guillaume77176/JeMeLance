@@ -3,26 +3,8 @@
 
 Acceder à l'application streamlit developpée : https://jemelance.streamlit.app/ .
 
-Pour Emannuel : 
+JeMeLance est un projet réalisé dans le cadre du cours Python 2A à l'ENSAE. 
 
-Pour récupérer le data frame de travail brute faisant suite à la récupération RNE tu peux soit depuis le "main" ou bien "main/notebooks"
-lancer le code suivant (attention à ne pas commit dans le main, cela compromettrait tout le projet, utilise une autre branche pour cela): 
-
-```` python
-from data.load_idf_10_24 import load_base
-
-df = load_base()
-
-````
-
-Ou bien tu peux copier coller le code suivant depuis n'importe quelle ide, sans forcément cloner le repo github :
-
-``` python 
-import pandas as pd 
-
-url  = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_final/idf_10_24.parquet"
-
-data = pd.read_parquet(url, engine = "pyarrow") #enlève engine = "pyarrow" si erreur sur pyarrow dans ton ide
-````
+Le but : Souvent, les 
 
 
