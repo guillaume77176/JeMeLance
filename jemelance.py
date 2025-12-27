@@ -51,12 +51,12 @@ with col2:
 st.title("Je me lance ? 🤔 🚀🚀🚀")
 
 st.markdown(
-    "<h1 style='font-family:Jumble; font-size:20px; color:White;'>Avec JeMeLance, n'ayez plus de doutes sur votre projet d'entreprise ! Envie de démarrer une activité dans les secteurs du commerce et de l'artisanat ? Entrer vos informations personnelles et une description brève de votre projet pour connaitre vos chances de réusssir !</h1>",
+    "<h1 style='font-family:Jumble; font-size:20px; color:White;'>Avec JeMeLance, n'ayez plus de doutes sur votre projet d'entreprise ! Envie de démarrer une activité dans les secteurs du commerce ou de l'artisanat ? Entrez vos informations personnelles et une description brève de votre projet pour connaitre vos chances de réusssir !</h1>",
     unsafe_allow_html=True
 )
 
 st.markdown(
-    "<h1 style='font-family:Jumble; font-size:20px; color:White;'>Les prédictions sont réalisés à l'aide d'un modèle d'intelligence artificielle. Il donne pour les cinq années suivant la création d'entreprise les chances d'être radié du registre national des entreprises.</h1>",
+    "<h1 style='font-family:Jumble; font-size:20px; color:White;'>Les prédictions sont réalisées à l'aide d'un modèle d'intelligence artificielle. Il donne pour les cinq années suivant la création d'entreprise les chances d'être radié du registre national des entreprises.</h1>",
     unsafe_allow_html=True
 )
 
@@ -79,7 +79,7 @@ st.markdown(f"""
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
     line-height: 1.5;
 ">
-<b>⚠️ A propos de la fiabilité des résultats :</b> Évalué sur plus de dix ans de données cumulées, le modèle prédit correctement en moyenne 70% des entreprises qui ont été effectivement radiées au cours des cinq années suivant la création. Nous mettons en garde l'utilisateur avisé sur le fait que le modèle a tendance à donner de fausses alertes sur les chances d'échouer. Autrement dit, il se montre souvent pessimiste à tord. Il ne doit servir en aucun cas d'outil de décision final, mais est une simple vue globale de la réalité du tissu entrepreneurial d'Île-de-France de ces 10 dernières années.
+<b>⚠️ A propos de la fiabilité des résultats :</b> Évalué sur plus de dix ans de données cumulées, le modèle prédit correctement en moyenne 70% des entreprises qui ont été effectivement radiées au cours des cinq années suivant la création. Nous mettons en garde l'utilisateur avisé sur le fait que le modèle a tendance à donner de fausses alertes sur les chances d'échouer. Autrement dit, il se montre souvent pessimiste à tort. Il ne doit servir en aucun cas d'outil de décision finale, mais est une simple vue globale de la réalité du tissu entrepreneurial d'Île-de-France de ces 10 dernières années.
 </div>
 """, unsafe_allow_html=True)
 
@@ -480,13 +480,13 @@ if bouton == True:
         if pred == 0:
             messages_pred.append({
                 "annee": i+1,
-                "msg": f"A priori, il y a peu de chances pour que votre activité soit radiée au cours de l'année {i} après sa création. Feu vert pour l'instant.",
+                "msg": f"A priori, il y a peu de chances pour que votre activité soit radiée au cours de l'année {i+1} après sa création. Feu vert pour l'instant.",
                 "type": "ok"
             })
         else:
             messages_pred.append({
                 "annee": i+1,
-                "msg": f"Cependant, il semblerait qu'il y ait de fortes chances que votre activité soit radiée au cours de l'année {i}. Penchez-vous davantage sur l'évaluation du projet !",
+                "msg": f"Cependant, il semblerait qu'il y ait de fortes chances que votre activité soit radiée au cours de l'année {i+1} après sa création. Penchez-vous davantage sur l'évaluation du projet !",
                 "type": "risk"
             })
             break
