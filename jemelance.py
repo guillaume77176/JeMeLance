@@ -492,13 +492,12 @@ if bouton == True:
             })
             break
 
-      if (len(messages_pred) == 5 and radié_list[-1] == 0):
+    if (len(messages_pred) == 5 and radié_list[-1] == 0):
         messages_pred.append({
                 "annee": 5,
                 "msg": f"Il semble que votre projet pourra survivre aux 5 premières années. Lancez vous !!! ",
                 "type": "risk"
             })
-            break
 
 
 
