@@ -477,12 +477,20 @@ if bouton == True:
     for i in range(5):
         pred = radié_list[i]
 
-        if pred == 0:
+        if pred == 0 :
+          if (len(messages_pred) == 5 and radié_list[-1] == 0):
             messages_pred.append({
-                "annee": i+1,
-                "msg": f"A priori, il y a peu de chances pour que votre activité soit radiée au cours de l'année {i+1} après sa création. Feu vert pour l'instant.",
-                "type": "ok"
-            })
+                  "annee": i+1,
+                  "msg": f"A priori, il y a peu de chances pour que votre activité soit radiée dans les 5 ans suivant sa création. LANCEZ-VOUS !!!",
+                  "type": "ok"
+                    })
+          else:
+            messages_pred.append({
+                    "annee": i+1,
+                    "msg": f"A priori, il y a peu de chances pour que votre activité soit radiée au cours de l'année {i+1} après sa création. Feu vert pour l'instant.",
+                    "type": "ok"
+                      })
+              
         else:
             messages_pred.append({
                 "annee": i+1,
@@ -490,14 +498,6 @@ if bouton == True:
                 "type": "risk"
             })
             break
-
-    #si pas de radiation jusqu'à l'année 5
-    if len(messages_pred) == 5 and radié_list[-1] == 0:
-        messages_pred.append({
-            "annee": 5,
-            "msg": "A priori, il y a peu de chances pour que votre activité soit radiée dans les 5 ans suivant sa création. LANCEZ-VOUS !!!",
-            "type": "ok"
-        })
 
 
 
