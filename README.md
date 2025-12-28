@@ -1,5 +1,5 @@
 # JeMeLance
-![Logo](assets/logo.png)
+![Logo](logo.png)
 
 `Version 1.1`
 
