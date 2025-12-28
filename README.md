@@ -9,10 +9,11 @@ Guillaume Roustan | Emmanuel Akoun
 
 `Version 1.1`
 
+JeMeLance est un projet réalisé dans le cadre du cours Python 2A à l'ENSAE. 
+
 Acceder à l'application streamlit developpée : https://jemelance-now.streamlit.app/
 
 -------
-JeMeLance est un projet réalisé dans le cadre du cours Python 2A à l'ENSAE. 
 
 ### Le contexte et le but : 
 Souvent, les individus ayant un projet de création d'entreprise peuvent douter, doute qui freine souvent les ambitions. JeMeLance est un projet qui se donne la tâche, sans grandes ambitions et de manière perfectible, de lever une petite partie de ces doutes. En utilisant comme base principale celle du Registre Nationale des Entreprises (RNE) rendue accessible de manière libre par L'INPI, le but est de prédire pour les 5 années suivants la création d'entreprise, si une entreprise sera radiée du RNE au cours de ces années. Le projet se focalise sur la région Ile-de-France.
