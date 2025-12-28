@@ -563,3 +563,14 @@ if bouton == True:
         key = os.environ["AWS_ACCESS_KEY_ID"], 
         secret = os.environ["AWS_SECRET_ACCESS_KEY"], 
         token = os.environ["AWS_SESSION_TOKEN"])
+
+
+    #Stockage sur S3
+    MY_BUCKET = "guillaume176"
+
+    FILE_PATH_OUT_S3 = f"{MY_BUCKET}/diffusion/data_app/log.parquet"
+
+    with fs.open(FILE_PATH_OUT_S3,"wb") as file_out:
+        data_log.to_parquet(file_out, index=False)
+
+    print(f"Donnés chargés dans {FILE_PATH_OUT_S3}")
