@@ -1,5 +1,9 @@
 # JeMeLance
-<img src="logo.png" alt="Logo" width="150">
+<p align="center">
+  <img src="logo.png" alt="Logo 1" width="120">
+  &nbsp;&nbsp;&nbsp;
+  <img src="logoENSAE.png" alt="Logo 2" width="120">
+</p>
 
 `Version 1.1`
 
