@@ -5,8 +5,19 @@ polars
 matplotlib
 seaborn
 tqdm
+requests
+s3fs
+datetime
 
-#nlp pour conversion "description" vers code APE
+#app
+streamlit
+
+#nlp
 spacy
-langchain_community.retrievers
-langchain_community.document_loaders
+langchain_community
+joblib
+
+#ml
+scikit-learn
+xgboost
+

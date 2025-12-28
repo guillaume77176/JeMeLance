@@ -15,6 +15,17 @@ def load_base_model():
     return data
 
 
+def load_base_nlp():
+    url = "https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_nlp/data_text.parquet"
+    data = pd.read_parquet(url,engine="pyarrow")
+    print("Data Frame data_text récupéré depuis S3")
+    return data
+
+def load_base_ville():
+    url = "https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/1f4841ac6cc0313803cabfa2c7ca4d37.parquet"
+    data = pd.read_parquet(url,engine="pyarrow")
+    return data
+
 def get_df_i(data : pd.DataFrame) -> list:
     
     df1 = data.copy()
