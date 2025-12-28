@@ -27,12 +27,12 @@ I) Le dossier `notebooks` contient les notebooks principaux qui consistues le re
 
 II) Le dossier `src` contient les principaux modules utiles pour une réutilisation du projet rapide, et sert par la mêle occasion à l'application streamlit développée.
 
-    -  `src.data` version 1.1 contient `load_base`, `get_df_i`, `load_base_model`, ainsi que les autres modules fonctions suivantes servant à l'application streamlit :
+- `src.data` version 1.1 contient `load_base`, `get_df_i`, `load_base_model`, ainsi que les autres modules fonctions suivantes servant à l'application streamlit :
         - `load_base_nlp` renvoie la base RNE obtenue dans la partie récupération dont les textes de renseignements des activités de chaque entreprise ont été néttoyés depuis le notebook `clean_nlp.ipynb`.
         - `load_base_ville` renvoie la base de donnée Communes et villes de France fournit par https://www.data.gouv.fr/datasets/communes-et-villes-de-france-en-csv-excel-json-parquet-et-feather.
-    - Les fichiers `seuils_proba_xgb.json`, `xgb_radié1.pkl`, `xgb_radié2.pkl`, `xgb_radié3.pkl`, `xgb_radié4.pkl`, `xgb_radié5.pk` correspondent aux sauvegardes des 5 modèles retenues dans la partie modélisation, ainsi que des seuils de probabilité optimaux pour la classification.
-    - Le module `load_xgb.py` permet de récupérer le modèle entrainé sur les données grâce à la fonction `load_model`. La fonction `load_threshold` récupère les seuils optimaux pour la classification.
-    - Le module `nlp.py` permet quant à lui de récupérer un code APE ainsi les textes type "objet" et siren pouvant correspondre depuis une saisie utilisateur renseignant brièvement sur l'activité projetée. 
+- Les fichiers `seuils_proba_xgb.json`, `xgb_radié1.pkl`, `xgb_radié2.pkl`, `xgb_radié3.pkl`, `xgb_radié4.pkl`, `xgb_radié5.pk` correspondent aux sauvegardes des 5 modèles retenues dans la partie modélisation, ainsi que des seuils de probabilité optimaux pour la classification.
+- Le module `load_xgb.py` permet de récupérer le modèle entrainé sur les données grâce à la fonction `load_model`. La fonction `load_threshold` récupère les seuils optimaux pour la classification.
+- Le module `nlp.py` permet quant à lui de récupérer un code APE ainsi les textes type "objet" et siren pouvant correspondre depuis une saisie utilisateur renseignant brièvement sur l'activité projetée. 
 
 III) Le dossier `docs` fournit lui de la documentation sur les données du RNE, ainsi que sur la nomenclature NAF, permettant de comprendre la logique des code APE.
 
