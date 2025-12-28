@@ -1,6 +1,8 @@
 # JeMeLance
 ### Projet 2A ENSAE Python | Guillaume Roustan, Emmanuel Akoun
 
+`Version 1.1`
+
 Acceder à l'application streamlit developpée : https://jemelance.streamlit.app/ .
 
 -------
@@ -15,7 +17,7 @@ Souvent, les individus ayant un projet de création d'entreprise peuvent douter,
 
 La plupart des données utilisées pour ce projet ont été téléchargées et stockées sur le SSP cloud afin d'en faciliter les appels successifs. Ci-dessous, vous trouverez chaque base de données utilisés, sa source, et son lien de téléchargement.
 
-- Données du RNE depuis 1980 (source https://data.inpi.fr/content/editorial/Serveur_ftp_entreprises) -> Liens SSP cloud (13 fichiers .parquet) :
+- Données du RNE depuis 1980 jusqu'en 2024 (source https://data.inpi.fr/content/editorial/Serveur_ftp_entreprises) -> Liens SSP cloud (13 fichiers .parquet) :
   - https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_RNE/RNE_1980_1990.parquet
   - https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_RNE/RNE_1990_2000.parquet
   - https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_RNE/RNE_2000_2005.parquet
@@ -77,6 +79,8 @@ Dévoloppée à l'aide de l'api streamlit et hébergée gratuitement sur le clou
 Le script `jemelance.py` fournit le code nécéssaire à faire tourner l'application.
 L'application constitue un objet à part entière du rendu final.
 
+------
+JeMeLance | version 1.1
 
 
 
