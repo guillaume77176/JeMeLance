@@ -12,16 +12,25 @@ Souvent, les individus ayant un projet de création d'entreprise peuvent douter,
 ### L'arboressance du projet : 
 Le projet suit la logique suivante :
 
-Le dossier `notebooks` contient les notebooks principaux qui serviront au rendue final. Par la même occasion, ils sont la base des créations des bases de données utiles au projet, mais également de l'analyse de données et de la modélisation. 
+I) Le dossier `notebooks` contient les notebooks principaux qui serviront au rendue final. Par la même occasion, ils sont la base des créations des bases de données utiles au projet, mais également de l'analyse de données et de la modélisation. 
 
 - `Get_RNE_FromScratch.ipynb` retrace la récupération du RNE depuis un serveur ftp fournit par l'INPI. Les données sont téléchargées et stockées directement sur le SSP cloud.
 - `Get_RNE_More.ipynb` retrace quant à lui la récupération de données supplémentaires. Il constitue la partie "data engeenering" du projet. La base de données obtenue est également stockée sur le SSP cloud.
 - `Analyse_RNE.ipynb` se consacre à l'analyse de données. Il permet d'étudier (de manière non-exhaustive certes) les relations entre les variables explicatives retenues à ce stade et les variables cibles construit et définies d'une manière spécifique.
 - `Modélisation_RNE.ipynb` est le notebook qui propose l'utilisation d'un modèle de classfication pour réaliser les prédictions. Le modèle est entrainé, évalué et enregistré.
-- Dossier `data` version 1.1 contenant le module principale de récupération des données pour la partie analyse.
+- Dossier `notebooks.data` version 1.1 contenant le module principale de récupération des données pour la partie analyse.
     - Contient la fonction `load_base`, servant à récupérer depuis le SSP cloud la base de donnée brute issue de la partie récupération, et donnant accès aux entreprises d'Ile-de-France créées entre 2010 et 2024.
     - Contient la fonction `get_df_i` servant à gérer simultanément les 5 data frames de travail issues de la création des 5 variables cibles, les `radiéi`, avec i compris entre 1 et 5, où `radiéi` est une variable indicatrice du fait qu'une entreprise soit radiée du RNE au cours de l'année i suivant sa création.
     - Contient la fonction `load_base_model` servant à récupérer depuis le SSP cloud la base donnée affinée de l'analyse qui sert à la modélisation.
-      
+
+II) Le dossier `src` contient les principaux modules utiles pour une réutilisation du projet rapide, et sert par la mêle occasion à l'application streamlit développée.
+    -  `src.data` version 1.1 contient `load_base`, `get_df_i`, `load_base_model`, ainsi que les autres modules fonctions suivantes servant à l'application streamlit :
+        - `load_base_nlp` renvoie la base RNE obtenue dans la partie récupération dont les textes de renseignements des activités de chaque entreprise ont été néttoyés depuis le notebook `clean_nlp.ipynb`.
+        - `load_base_ville` renvoie la base de donnée Communes et villes de France fournit par https://www.data.gouv.fr/datasets/communes-et-villes-de-france-en-csv-excel-json-parquet-et-feather.
+    - Les fichiers `seuils_proba_xgb.json`, `xgb_radié1.pkl`, `xgb_radié2.pkl`, `xgb_radié3.pkl`, `xgb_radié4.pkl`, `xgb_radié5.pk` correspondent aux sauvegardes des 5 modèles retenues dans la partie modélisation, ainsi que des seuils de probabilité optimaux pour la classification.
+    - Le module `load_xgb.py` permet de récupérer le modèle entrainé sur les données grâce à la fonction `load_model`. La fonction `load_threshold` récupère les seuils optimaux pour la classification.
+    - Le module `nlp.py` permet quant à lui de récupérer un code APE ainsi les textes type "objet" et siren pouvant correspondre depuis une saisie utilisateur renseignant brièvement sur l'activité projetée. 
+
+III) Le dossier `docs` fournit lui de la documentation sur les données du RNE, ainsi que sur la nomenclature NAF, permettant de comprendre la logique des code APE.
 
 
