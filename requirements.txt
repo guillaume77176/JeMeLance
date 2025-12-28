@@ -1,10 +1,11 @@
+                            ############################################################
+                            # Packages nécessaires à l'application JeMeLance streamlit #
+                            ############################################################
+
 #packages transversaux 
 numpy 
 pandas
-polars
 matplotlib
-seaborn
-tqdm
 requests
 s3fs
 datetime

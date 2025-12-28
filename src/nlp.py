@@ -5,6 +5,7 @@ from langchain_community.document_loaders import DataFrameLoader
 
 data_text = load_base_nlp()
 
+#(Cette fonction est inspiré fortement du cours de Lino Galiana)
 def predict_ape(des : str) -> list:
 
     loader = DataFrameLoader(data_text, page_content_column="text_clean")
