@@ -549,28 +549,3 @@ if bouton == True:
 
     data_log = pd.concat([past_log,data_log])
 
-
-
-    t1 = st.secrets["DB_1"]
-    t2 = st.secrets["DB_1_1"]
-    t3 = st.secrets["DB_1_2"]
-
-    os.environ["AWS_ACCESS_KEY_ID"] = t1
-    os.environ["AWS_SECRET_ACCESS_KEY"] = t2
-    os.environ["AWS_SESSION_TOKEN"] = t3
-    os.environ["AWS_DEFAULT_REGION"] = 'us-east-1'
-    fs = s3fs.S3FileSystem(
-        client_kwargs={'endpoint_url': 'https://'+'minio.lab.sspcloud.fr'},
-        key = os.environ["AWS_ACCESS_KEY_ID"], 
-        secret = os.environ["AWS_SECRET_ACCESS_KEY"], 
-        token = os.environ["AWS_SESSION_TOKEN"])
-
-    #Stockage sur S3
-    MY_BUCKET = "guillaume176"
-
-    FILE_PATH_OUT_S3 = f"{MY_BUCKET}/diffusion/data_app/log.parquet"
-
-    with fs.open(FILE_PATH_OUT_S3,"wb") as file_out:
-        data_log.to_parquet(file_out, index=False)
-
-    print(f"Donnés chargés dans {FILE_PATH_OUT_S3}")
