@@ -1,8 +1,8 @@
 # JeMeLance
 <p align="center">
-  <img src="logo.png" alt="Logo 1" width="120">
+  <img src="logo.png" alt="Logo 1" width="250">
   &nbsp;&nbsp;&nbsp;
-  <img src="logoENSAE.png" alt="Logo 2" width="120">
+  <img src="logoENSAE.png" alt="Logo 2" width="250">
 </p>
 
 `Version 1.1`
