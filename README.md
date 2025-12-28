@@ -1,9 +1,11 @@
-# JeMeLance
+# JeMeLance 🤔 🚀🚀🚀
 <p align="center">
   <img src="logo.png" alt="Logo 1" width="250">
   &nbsp;&nbsp;&nbsp;
   <img src="logoENSAE.png" alt="Logo 2" width="250">
 </p>
+
+Guillaume Roustan | Emmanuel Akoun
 
 `Version 1.1`
 
