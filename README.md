@@ -26,6 +26,7 @@ I) Le dossier `notebooks` contient les notebooks principaux qui consistues le re
     - Contient la fonction `load_base_model` servant à récupérer depuis le SSP cloud la base donnée affinée de l'analyse qui sert à la modélisation.
 
 II) Le dossier `src` contient les principaux modules utiles pour une réutilisation du projet rapide, et sert par la mêle occasion à l'application streamlit développée.
+
     -  `src.data` version 1.1 contient `load_base`, `get_df_i`, `load_base_model`, ainsi que les autres modules fonctions suivantes servant à l'application streamlit :
         - `load_base_nlp` renvoie la base RNE obtenue dans la partie récupération dont les textes de renseignements des activités de chaque entreprise ont été néttoyés depuis le notebook `clean_nlp.ipynb`.
         - `load_base_ville` renvoie la base de donnée Communes et villes de France fournit par https://www.data.gouv.fr/datasets/communes-et-villes-de-france-en-csv-excel-json-parquet-et-feather.
