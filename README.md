@@ -20,7 +20,7 @@ Le dossier `notebooks` contient les notebooks principaux qui serviront au rendue
 - `Modélisation_RNE.ipynb` est le notebook qui propose l'utilisation d'un modèle de classfication pour réaliser les prédictions. Le modèle est entrainé, évalué et enregistré.
 - Dossier `data` version 1.1 contenant le module principale de récupération des données pour la partie analyse.
     - Contient la fonction `load_base`, servant à récupérer depuis le SSP cloud la base de donnée brute issue de la partie récupération, et donnant accès aux entreprises d'Ile-de-France créées entre 2010 et 2024.
-    - Contient la fonction `get_df_i` servant à gérer simultanément les 5 data frames de travail issues de la création des 5 variables cibles, les `radiéi`, $i \in \{1,2,3,4,5\}$, où `radiéi` est une variable indicatrice du fait qu'une entreprise soit radiée du RNE au cours de l'année i suivant sa création.
+    - Contient la fonction `get_df_i` servant à gérer simultanément les 5 data frames de travail issues de la création des 5 variables cibles, les `radiéi`, avec i compris entre 1 et 5, où `radiéi` est une variable indicatrice du fait qu'une entreprise soit radiée du RNE au cours de l'année i suivant sa création.
     - Contient la fonction `load_base_model` servant à récupérer depuis le SSP cloud la base donnée affinée de l'analyse qui sert à la modélisation.
       
 
