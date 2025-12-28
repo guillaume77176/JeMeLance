@@ -9,7 +9,7 @@ Guillaume Roustan | Emmanuel Akoun
 
 `Version 1.1`
 
-Acceder à l'application streamlit developpée : https://jemelance.streamlit.app/ .
+Acceder à l'application streamlit developpée : https://jemelance-now.streamlit.app/
 
 -------
 JeMeLance est un projet réalisé dans le cadre du cours Python 2A à l'ENSAE. 
