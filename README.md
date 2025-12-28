@@ -9,10 +9,12 @@ JeMeLance est un projet réalisé dans le cadre du cours Python 2A à l'ENSAE.
 ### Le contexte et le but : 
 Souvent, les individus ayant un projet de création d'entreprise peuvent douter, doute qui freine souvent les ambitions. JeMeLance est un projet qui se donne la tâche, sans grandes ambitions et de manière perfectible, de lever une petite partie de ces doutes. En utilisant comme base principale celle du Registre Nationale des Entreprises (RNE) rendue accessible de manière libre par L'INPI, le but est de prédire pour les 5 années suivants la création d'entreprise, si une entreprise sera radiée du RNE au cours de ces années. Le projet se focalise sur la région Ile-de-France.
 
-### L'arboressance du projet : 
+-------
+
+### L'arboressance du projet (hors application jemelance.py) : 
 Le projet suit la logique suivante :
 
-I) Le dossier `notebooks` contient les notebooks principaux qui serviront au rendue final. Par la même occasion, ils sont la base des créations des bases de données utiles au projet, mais également de l'analyse de données et de la modélisation. 
+I) Le dossier `notebooks` contient les notebooks principaux qui consistues le rendu final. Par la même occasion, ils sont la base des créations des bases de données utiles au projet, mais également de l'analyse de données et de la modélisation. 
 
 - `Get_RNE_FromScratch.ipynb` retrace la récupération du RNE depuis un serveur ftp fournit par l'INPI. Les données sont téléchargées et stockées directement sur le SSP cloud.
 - `Get_RNE_More.ipynb` retrace quant à lui la récupération de données supplémentaires. Il constitue la partie "data engeenering" du projet. La base de données obtenue est également stockée sur le SSP cloud.
@@ -32,5 +34,18 @@ II) Le dossier `src` contient les principaux modules utiles pour une réutilisat
     - Le module `nlp.py` permet quant à lui de récupérer un code APE ainsi les textes type "objet" et siren pouvant correspondre depuis une saisie utilisateur renseignant brièvement sur l'activité projetée. 
 
 III) Le dossier `docs` fournit lui de la documentation sur les données du RNE, ainsi que sur la nomenclature NAF, permettant de comprendre la logique des code APE.
+
+-------
+### L'application JeMeLance : 
+Dévoloppée à l'aide de l'api streamlit et hébergée gratuitement sur le cloud streamlit, cette application vise à déployer le modèle mis en place de manière ludique et fluide. 
+Le script `jemelance.py` fournit le code nécéssaire à faire tourner l'application. 
+
+
+
+
+
+
+
+
 
 
