@@ -1,5 +1,5 @@
 # JeMeLance
-![Logo](logo.png)
+<img src="logo.png" alt="Logo" width="150">
 
 `Version 1.1`
 
