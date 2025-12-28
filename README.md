@@ -15,7 +15,7 @@ Souvent, les individus ayant un projet de création d'entreprise peuvent douter,
 
 La plupart des données utilisées pour ce projet ont été téléchargées et stockées sur le SSP cloud afin d'en faciliter les appels successifs. Ci-dessous, vous trouverez chaque base de données utilisés, sa source, et son lien de téléchargement.
 
-- Données du RNE depuis 1980 (source https://data.inpi.fr/content/editorial/Serveur_ftp_entreprises) -> Liens (13 fichiers .parquet) :
+- Données du RNE depuis 1980 (source https://data.inpi.fr/content/editorial/Serveur_ftp_entreprises) -> Liens SSP cloud (13 fichiers .parquet) :
   - https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_RNE/RNE_1980_1990.parquet
   - https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_RNE/RNE_1990_2000.parquet
   - https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_RNE/RNE_2000_2005.parquet
@@ -30,7 +30,16 @@ La plupart des données utilisées pour ce projet ont été téléchargées et s
   - https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_RNE/RNE_2022_2023.parquet
   - https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_RNE/RNE_2023_2024.parquet
 
+- Niveau de vie par commune en France (2013) (source : INSEE) -> Lien direct : (1 fichier .xlsx) :
+    - https://www.data.gouv.fr/api/1/datasets/r/d3ce0107-416f-42cf-a335-d71f89b00b21
 
+- Recenssement commune de France jusqu'en 2022 (source : INSEE) -> Lien SSP cloud (1 fichier .csv) :
+  - https://minio.lab.sspcloud.fr/guillaume176/diffusion/data_supp/DS_RP_SERIE_HISTORIQUE_2022_data.csv
+
+- API Base Adresse Nationale (BAN) (source : https://api.gouv.fr/les-api/base-adresse-nationale)
+
+- Communes et villes de France (source : https://www.data.gouv.fr/datasets/communes-et-villes-de-france-en-csv-excel-json-parquet-et-feather) -> Lien direct : (1 fichier .parquet):
+  - https://object.files.data.gouv.fr/hydra-parquet/hydra-parquet/1f4841ac6cc0313803cabfa2c7ca4d37.parquet
 
 ------
 
