@@ -1,5 +1,5 @@
 # JeMeLance
-### Projet 2A ENSAE Python | Guillaume Roustan, Emmanuel Akoun
+![Logo](assets/logo.png)
 
 `Version 1.1`
 
